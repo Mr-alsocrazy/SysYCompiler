@@ -17,18 +17,23 @@ using namespace std;
 vector<Token *> token_vec;
 
 static bool in_comment;
+static bool record_format;
 
 class lexer {
 private:
-    string cur_line;
+    ifstream ifs;
     char cur_char;
+    string cur_line;
+    int line_length;
+    int l_id;
     int cpos;
     int lpos;
-    int line_length;
     bool is_end;
 public:
-    lexer(string _cur_line, int _lpos) :
-            cur_line(std::move(_cur_line)), lpos(_lpos), cpos(0), line_length(_cur_line.size()), is_end(false) {}
+    lexer(ifstream _ifs, int _lpos) :
+            ifs(std::move(_ifs)), lpos(_lpos), cpos(0), is_end(false) {
+        ifs.open("testfile.txt");
+    }
 
     void next_char();
 
@@ -37,8 +42,12 @@ public:
     static pair<bool, table::sym> is_reserved(string &str);
 
     void get_sym();
+
+    const ifstream& get_ifs() const { return ifs; }
+
+    void print_tk();
 };
 
-void read_file();
+
 
 #endif //LEXICALANALYSIS_LEXER_H
