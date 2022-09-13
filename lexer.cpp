@@ -11,13 +11,19 @@ void read_file() {
     while(getline(ifs, buf)) {
         lexer(buf, ++idx);
     }
+    ifs.close();
 }
 
-void lexer::next_char() {
+inline void lexer::next_char() {
     if (cpos < line_length)
         cur_char = cur_line[cpos++];
     else
         is_end = true;
+}
+
+inline void lexer::roll_back() {
+    if (cpos > 0)
+        cur_char = cur_line[--cpos];
 }
 
 pair<bool, table::sym> lexer::is_reserved(std::string &str) {
@@ -35,6 +41,16 @@ void lexer::get_sym() {
         match.clear();
         while (isspace(cur_char) && !is_end)
             next_char();
+        while (in_comment && !is_end) {
+            next_char();
+            if (cur_char == '*') {
+                next_char();
+                if (cur_char == '/') {
+                    in_comment = false;
+                    break;
+                }
+            }
+        }
         if (isalpha(cur_char)) {
             match += cur_char;
             next_char();
@@ -79,8 +95,75 @@ void lexer::get_sym() {
             if (cur_char == '=') {
                 token_vec.push_back(new Token(table::sym::NEQ, lpos));
             } else {
+                roll_back();
                 token_vec.push_back(new Token(table::sym::NOT, lpos));
             }
+        } else if (cur_char == '|') {
+            next_char();
+            if (cur_char == '|') {
+                token_vec.push_back(new Token(table::sym::OR, lpos));
+            }
+        } else if (cur_char == '&') {
+            next_char();
+            if (cur_char == '&') {
+                token_vec.push_back(new Token(table::sym::AND, lpos));
+            }
+        } else if (cur_char == '+') {
+            next_char();
+            token_vec.push_back(new Token(table::sym::PLUS, lpos));
+        } else if (cur_char == '-') {
+            next_char();
+            token_vec.push_back(new Token(table::sym::MINU, lpos));
+        } else if (cur_char == '*') {
+            next_char();
+            if (cur_char == '/') {
+                in_comment = false;
+            } else {
+                roll_back();
+                token_vec.push_back(new Token(table::sym::MULT, lpos));
+            }
+        } else if (cur_char == '/') {
+            next_char();
+            if (cur_char == '/') {
+                while (cpos < line_length) {
+                    next_char();
+                }
+            } else if (cur_char == '*') {
+                in_comment = true;
+            } else {
+                roll_back();
+                token_vec.push_back(new Token(table::sym::DIV, lpos));
+            }
+        } else if (cur_char == '>') {
+            next_char();
+            if (cur_char == '=') {
+                token_vec.push_back(new Token(table::sym::GEQ, lpos));
+            } else {
+                roll_back();
+                token_vec.push_back(new Token(table::sym::GRE, lpos));
+            }
+        } else if (cur_char == '<') {
+            next_char();
+            if (cur_char == '=') {
+                token_vec.push_back(new Token(table::sym::LEQ, lpos));
+            } else {
+                roll_back();
+                token_vec.push_back(new Token(table::sym::LSS, lpos));
+            }
+        } else if (cur_char == '=') {
+            next_char();
+            if (cur_char == '=') {
+                token_vec.push_back(new Token(table::sym::EQL, lpos));
+            } else {
+                roll_back();
+                token_vec.push_back(new Token(table::sym::ASSIGN, lpos));
+            }
+        } else if (cur_char == ',') {
+            next_char();
+            token_vec.push_back(new Token(table::sym::COMMA, lpos));
+        } else if (cur_char == ';'){
+            next_char();
+            token_vec.push_back(new Token(table::sym::SEMICN, lpos));
         }
     }
 }
