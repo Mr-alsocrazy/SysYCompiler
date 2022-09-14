@@ -1,6 +1,11 @@
+#include "lexer.h"
 #include <iostream>
+#include <fstream>
+
+using namespace std;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    lexer lxr("../testfile.txt");
+    lxr.print_tk();
     return 0;
 }

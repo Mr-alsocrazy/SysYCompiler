@@ -20,7 +20,7 @@ namespace table {
         RBRACK, LBRACE, RBRACE, NONETYPE
     };
 
-    unordered_map<string, sym> reserved = {
+    static unordered_map<string, sym> reserved = {
         {"main",     sym::MAINTK},
         {"const",    sym::CONSTTK},
         {"int",      sym::INTTK},

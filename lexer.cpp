@@ -4,6 +4,9 @@
 #include "lexer.h"
 
 void lexer::print_tk() {
+    while (!is_end) {
+        get_sym();
+    }
     ifs.close();
     ofstream ofs;
     ofs.open("output.txt");
@@ -171,7 +174,7 @@ pair<bool, table::sym> lexer::is_reserved(std::string &str) {
 
 void lexer::get_sym() {
     string match;
-    while (isspace(cur_char) && !is_end)
+    while ((isspace(cur_char) || cur_char == '\t') && !is_end)
         next_char();
     if (isalpha(cur_char)) {
         match += cur_char;
@@ -241,12 +244,8 @@ void lexer::get_sym() {
         token_vec.push_back(new Token(table::sym::MINU, lpos));
     } else if (cur_char == '*') {
         next_char();
-        if (cur_char == '/') {
-            in_comment = false;
-        } else {
-            roll_back();
-            token_vec.push_back(new Token(table::sym::MULT, lpos));
-        }
+        roll_back();
+        token_vec.push_back(new Token(table::sym::MULT, lpos));
     } else if (cur_char == '/') {
         next_char();
         token_vec.push_back(new Token(table::sym::DIV, lpos));
@@ -290,8 +289,9 @@ void lexer::get_sym() {
             match += cur_char;
             next_char();
         }
+        match += cur_char;
         next_char();
         record_format = false;
-        token_vec.push_back(new Token(table::sym::STRCON, lpos));
+        token_vec.push_back(new Token(table::sym::STRCON, match, lpos));
     }
 }

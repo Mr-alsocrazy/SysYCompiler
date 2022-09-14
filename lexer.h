@@ -14,9 +14,8 @@
 
 using namespace std;
 
-vector<Token *> token_vec;
+static vector<Token *> token_vec;
 
-static bool in_comment;
 static bool record_format;
 
 class lexer {
@@ -30,9 +29,11 @@ private:
     int lpos;
     bool is_end;
 public:
-    lexer(ifstream _ifs, int _lpos) :
-            ifs(std::move(_ifs)), lpos(_lpos), cpos(0), is_end(false) {
-        ifs.open("testfile.txt");
+    lexer(const string& filename) :
+            lpos(0), cpos(0), is_end(false), line_length(0) {
+        ifs.open(filename);
+//        cout << ifs.is_open() << endl;
+        next_char();
     }
 
     void next_char();
