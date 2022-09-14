@@ -23,7 +23,8 @@ void lexer::print_tk() {
                 case table::sym::STRCON:
                     ofs << "STRCON" << " " << (*it)->get_name() << endl;
                     break;
-                default: {}
+                default: {
+                }
             }
         } else {
             switch ((*it)->get_symcode()) {
@@ -134,7 +135,8 @@ void lexer::print_tk() {
                     break;
                 case table::sym::NONETYPE:
                     break;
-                default: {}
+                default: {
+                }
             }
         }
     }
@@ -146,13 +148,10 @@ inline void lexer::next_char() {
         if (cpos == 0)
             l_id++;
         cur_char = cur_line[cpos++];
-    }
-    else if (ifs.eof()) {
+    } else if (ifs.eof()) {
         is_end = true;
     } else {
-        char buf[1024];
-        ifs.getline(buf, 1024);
-        cur_line = string(buf);
+        getline(ifs, cur_line);
         cur_char = ' ';
         cpos = 0;
         line_length = cur_line.size();
@@ -253,7 +252,7 @@ void lexer::get_sym() {
         if (cur_char == '/') {
             int fls = cpos;
             int tmp_l = line_length;
-            for(int i = 0; i < tmp_l - fls + 1; i++)
+            for (int i = 0; i < tmp_l - fls + 1; i++)
                 next_char();
         } else if (cur_char == '*') {
             while (!is_end) {

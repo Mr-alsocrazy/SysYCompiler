@@ -30,7 +30,7 @@ private:
     bool is_end;
 public:
     lexer(const string& filename) :
-            lpos(0), cpos(0), is_end(false), line_length(0) {
+            l_id(0), lpos(0), cpos(0), is_end(false), line_length(0) {
         ifs.open(filename);
 //        cout << ifs.is_open() << endl;
         next_char();
