@@ -1,0 +1,12 @@
+	/** /*** **/
+	int remain = 1;
+	int /** /*** **/remain_index = 0;
+	while (remain_index/** /*** **/ < remain) {
+		printf("19231177\n");
+		remain_index = remain_index + 1;
+	}
+	
+	
+	return 0;
+	
+}

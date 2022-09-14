@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-    lexer lxr("../testfile.txt");
+    lexer lxr("testfile.txt");
     lxr.print_tk();
     return 0;
 }

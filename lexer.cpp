@@ -14,8 +14,8 @@ void lexer::print_tk() {
     for (; it < token_vec.end(); it++) {
         if (!(*it)->get_name().empty()) {
             switch ((*it)->get_symcode()) {
-                case table::sym::IDENFER:
-                    ofs << "IDENFER" << " " << (*it)->get_name() << endl;
+                case table::sym::IDENFR:
+                    ofs << "IDENFR" << " " << (*it)->get_name() << endl;
                     break;
                 case table::sym::INTCON:
                     ofs << "INTCON" << " " << (*it)->get_name() << endl;
@@ -58,7 +58,7 @@ void lexer::print_tk() {
                     ofs << "AND" << " " << "&&" << endl;
                     break;
                 case table::sym::OR:
-                    ofs << "OR" << " " << "or" << endl;
+                    ofs << "OR" << " " << "||" << endl;
                     break;
                 case table::sym::WHILETK:
                     ofs << "WHILETK" << " " << "while" << endl;
@@ -138,6 +138,7 @@ void lexer::print_tk() {
             }
         }
     }
+    ofs.close();
 }
 
 inline void lexer::next_char() {
@@ -176,7 +177,7 @@ void lexer::get_sym() {
     string match;
     while ((isspace(cur_char) || cur_char == '\t') && !is_end)
         next_char();
-    if (isalpha(cur_char)) {
+    if (isalpha(cur_char) || cur_char == '_') {
         match += cur_char;
         next_char();
         while (isalnum(cur_char) || cur_char == '_') {
@@ -190,7 +191,7 @@ void lexer::get_sym() {
             }
             token_vec.push_back(new Token(rp.second, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::IDENFER, match, lpos));
+            token_vec.push_back(new Token(table::sym::IDENFR, match, lpos));
         }
     } else if (isdigit(cur_char)) {
         match += cur_char;
@@ -221,19 +222,21 @@ void lexer::get_sym() {
     } else if (cur_char == '!') {
         next_char();
         if (cur_char == '=') {
+            next_char();
             token_vec.push_back(new Token(table::sym::NEQ, lpos));
         } else {
-            roll_back();
             token_vec.push_back(new Token(table::sym::NOT, lpos));
         }
     } else if (cur_char == '|') {
         next_char();
         if (cur_char == '|') {
+            next_char();
             token_vec.push_back(new Token(table::sym::OR, lpos));
         }
     } else if (cur_char == '&') {
         next_char();
         if (cur_char == '&') {
+            next_char();
             token_vec.push_back(new Token(table::sym::AND, lpos));
         }
     } else if (cur_char == '+') {
@@ -244,36 +247,54 @@ void lexer::get_sym() {
         token_vec.push_back(new Token(table::sym::MINU, lpos));
     } else if (cur_char == '*') {
         next_char();
-        roll_back();
         token_vec.push_back(new Token(table::sym::MULT, lpos));
     } else if (cur_char == '/') {
         next_char();
-        token_vec.push_back(new Token(table::sym::DIV, lpos));
+        if (cur_char == '/') {
+            int fls = cpos;
+            int tmp_l = line_length;
+            for(int i = 0; i < tmp_l - fls + 1; i++)
+                next_char();
+        } else if (cur_char == '*') {
+            while (!is_end) {
+                next_char();
+                if (cur_char == '*') {
+                    next_char();
+                    if (cur_char == '/') {
+                        next_char();
+                        break;
+                    }
+                    roll_back();
+                }
+            }
+        } else {
+            token_vec.push_back(new Token(table::sym::DIV, lpos));
+        }
     } else if (cur_char == '%') {
         next_char();
         token_vec.push_back(new Token(table::sym::MOD, lpos));
     } else if (cur_char == '>') {
         next_char();
         if (cur_char == '=') {
+            next_char();
             token_vec.push_back(new Token(table::sym::GEQ, lpos));
         } else {
-            roll_back();
             token_vec.push_back(new Token(table::sym::GRE, lpos));
         }
     } else if (cur_char == '<') {
         next_char();
         if (cur_char == '=') {
+            next_char();
             token_vec.push_back(new Token(table::sym::LEQ, lpos));
         } else {
-            roll_back();
             token_vec.push_back(new Token(table::sym::LSS, lpos));
         }
     } else if (cur_char == '=') {
         next_char();
         if (cur_char == '=') {
+            next_char();
             token_vec.push_back(new Token(table::sym::EQL, lpos));
         } else {
-            roll_back();
             token_vec.push_back(new Token(table::sym::ASSIGN, lpos));
         }
     } else if (cur_char == ',') {

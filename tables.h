@@ -11,7 +11,7 @@ using namespace std;
 
 namespace table {
     enum class sym {
-        IDENFER, INTCON, STRCON, MAINTK, CONSTTK,
+        IDENFR, INTCON, STRCON, MAINTK, CONSTTK,
         INTTK, BREAKTK, CONTINUETK, IFTK, ELSETK,
         NOT, AND, OR, WHILETK, GETINTTK, PRINTFTK,
         RETURNTK, PLUS, MINU, VOIDTK, MULT, DIV,
