@@ -9,12 +9,13 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "tables.h"
 #include "Token.h"
 
 using namespace std;
 
-static vector<Token *> token_vec;
+static vector<shared_ptr<Token>> token_vec;
 
 static bool record_format;
 

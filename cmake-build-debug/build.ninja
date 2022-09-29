@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = E$:/programmes/compiler/LexicalAnalysis/cmake-build-debug/
+cmake_ninja_workdir = E$:/programmes/compiler/Compiler/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target LexicalAnalysis
 
@@ -49,20 +49,26 @@ cmake_ninja_workdir = E$:/programmes/compiler/LexicalAnalysis/cmake-build-debug/
 
 build cmake_object_order_depends_target_LexicalAnalysis: phony || CMakeFiles/LexicalAnalysis.dir
 
-build CMakeFiles/LexicalAnalysis.dir/main.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/LexicalAnalysis/main.cpp || cmake_object_order_depends_target_LexicalAnalysis
+build CMakeFiles/LexicalAnalysis.dir/main.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/main.cpp || cmake_object_order_depends_target_LexicalAnalysis
   DEP_FILE = CMakeFiles\LexicalAnalysis.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++11
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
   OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
 
-build CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/LexicalAnalysis/lexer.cpp || cmake_object_order_depends_target_LexicalAnalysis
+build CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/lexer.cpp || cmake_object_order_depends_target_LexicalAnalysis
   DEP_FILE = CMakeFiles\LexicalAnalysis.dir\lexer.cpp.obj.d
   FLAGS = -g -std=gnu++11
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
   OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
 
-build CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/LexicalAnalysis/Token.cpp || cmake_object_order_depends_target_LexicalAnalysis
+build CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/Token.cpp || cmake_object_order_depends_target_LexicalAnalysis
   DEP_FILE = CMakeFiles\LexicalAnalysis.dir\Token.cpp.obj.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
+  OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
+
+build CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/parser.cpp || cmake_object_order_depends_target_LexicalAnalysis
+  DEP_FILE = CMakeFiles\LexicalAnalysis.dir\parser.cpp.obj.d
   FLAGS = -g -std=gnu++11
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
   OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
@@ -75,7 +81,7 @@ build CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj: CXX_COMPILER__LexicalAnalysi
 #############################################
 # Link the executable LexicalAnalysis.exe
 
-build LexicalAnalysis.exe: CXX_EXECUTABLE_LINKER__LexicalAnalysis_Debug CMakeFiles/LexicalAnalysis.dir/main.cpp.obj CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj
+build LexicalAnalysis.exe: CXX_EXECUTABLE_LINKER__LexicalAnalysis_Debug CMakeFiles/LexicalAnalysis.dir/main.cpp.obj CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
@@ -90,7 +96,7 @@ build LexicalAnalysis.exe: CXX_EXECUTABLE_LINKER__LexicalAnalysis_Debug CMakeFil
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D E:\programmes\compiler\LexicalAnalysis\cmake-build-debug && "E:\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D E:\programmes\compiler\Compiler\cmake-build-debug && "E:\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -101,7 +107,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D E:\programmes\compiler\LexicalAnalysis\cmake-build-debug && "E:\CLion 2022.2\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SE:\programmes\compiler\LexicalAnalysis -BE:\programmes\compiler\LexicalAnalysis\cmake-build-debug"
+  COMMAND = cmd.exe /C "cd /D E:\programmes\compiler\Compiler\cmake-build-debug && "E:\CLion 2022.2\bin\cmake\win\bin\cmake.exe" --regenerate-during-build -SE:\programmes\compiler\Compiler -BE:\programmes\compiler\Compiler\cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -119,7 +125,7 @@ build LexicalAnalysis: phony LexicalAnalysis.exe
 # =============================================================================
 
 #############################################
-# Folder: E:/programmes/compiler/LexicalAnalysis/cmake-build-debug
+# Folder: E:/programmes/compiler/Compiler/cmake-build-debug
 
 build all: phony LexicalAnalysis.exe
 

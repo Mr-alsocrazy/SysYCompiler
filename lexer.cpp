@@ -3,6 +3,8 @@
 //
 #include "lexer.h"
 
+#include <memory>
+
 void lexer::print_tk() {
     while (!is_end) {
         get_sym();
@@ -188,9 +190,9 @@ void lexer::get_sym() {
             if (rp.second == table::sym::PRINTFTK) {
                 record_format = true;
             }
-            token_vec.push_back(new Token(rp.second, lpos));
+            token_vec.push_back(std::make_shared<Token>(rp.second, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::IDENFR, match, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::IDENFR, match, lpos));
         }
     } else if (isdigit(cur_char)) {
         match += cur_char;
@@ -199,54 +201,54 @@ void lexer::get_sym() {
             match += cur_char;
             next_char();
         }
-        token_vec.push_back(new Token(table::sym::INTCON, match, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::INTCON, match, lpos));
     } else if (cur_char == '(') {
         next_char();
-        token_vec.push_back(new Token(table::sym::LPARENT, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::LPARENT, lpos));
     } else if (cur_char == ')') {
         next_char();
-        token_vec.push_back(new Token(table::sym::RPARENT, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::RPARENT, lpos));
     } else if (cur_char == '[') {
         next_char();
-        token_vec.push_back(new Token(table::sym::LBRACK, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::LBRACK, lpos));
     } else if (cur_char == ']') {
         next_char();
-        token_vec.push_back(new Token(table::sym::RBRACK, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::RBRACK, lpos));
     } else if (cur_char == '{') {
         next_char();
-        token_vec.push_back(new Token(table::sym::LBRACE, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::LBRACE, lpos));
     } else if (cur_char == '}') {
         next_char();
-        token_vec.push_back(new Token(table::sym::RBRACE, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::RBRACE, lpos));
     } else if (cur_char == '!') {
         next_char();
         if (cur_char == '=') {
             next_char();
-            token_vec.push_back(new Token(table::sym::NEQ, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::NEQ, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::NOT, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::NOT, lpos));
         }
     } else if (cur_char == '|') {
         next_char();
         if (cur_char == '|') {
             next_char();
-            token_vec.push_back(new Token(table::sym::OR, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::OR, lpos));
         }
     } else if (cur_char == '&') {
         next_char();
         if (cur_char == '&') {
             next_char();
-            token_vec.push_back(new Token(table::sym::AND, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::AND, lpos));
         }
     } else if (cur_char == '+') {
         next_char();
-        token_vec.push_back(new Token(table::sym::PLUS, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::PLUS, lpos));
     } else if (cur_char == '-') {
         next_char();
-        token_vec.push_back(new Token(table::sym::MINU, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::MINU, lpos));
     } else if (cur_char == '*') {
         next_char();
-        token_vec.push_back(new Token(table::sym::MULT, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::MULT, lpos));
     } else if (cur_char == '/') {
         next_char();
         if (cur_char == '/') {
@@ -267,41 +269,41 @@ void lexer::get_sym() {
                 }
             }
         } else {
-            token_vec.push_back(new Token(table::sym::DIV, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::DIV, lpos));
         }
     } else if (cur_char == '%') {
         next_char();
-        token_vec.push_back(new Token(table::sym::MOD, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::MOD, lpos));
     } else if (cur_char == '>') {
         next_char();
         if (cur_char == '=') {
             next_char();
-            token_vec.push_back(new Token(table::sym::GEQ, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::GEQ, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::GRE, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::GRE, lpos));
         }
     } else if (cur_char == '<') {
         next_char();
         if (cur_char == '=') {
             next_char();
-            token_vec.push_back(new Token(table::sym::LEQ, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::LEQ, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::LSS, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::LSS, lpos));
         }
     } else if (cur_char == '=') {
         next_char();
         if (cur_char == '=') {
             next_char();
-            token_vec.push_back(new Token(table::sym::EQL, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::EQL, lpos));
         } else {
-            token_vec.push_back(new Token(table::sym::ASSIGN, lpos));
+            token_vec.push_back(std::make_shared<Token>(table::sym::ASSIGN, lpos));
         }
     } else if (cur_char == ',') {
         next_char();
-        token_vec.push_back(new Token(table::sym::COMMA, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::COMMA, lpos));
     } else if (cur_char == ';') {
         next_char();
-        token_vec.push_back(new Token(table::sym::SEMICN, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::SEMICN, lpos));
     } else if (cur_char == '\"' && record_format) {
         match += cur_char;
         next_char();
@@ -312,6 +314,6 @@ void lexer::get_sym() {
         match += cur_char;
         next_char();
         record_format = false;
-        token_vec.push_back(new Token(table::sym::STRCON, match, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::STRCON, match, lpos));
     }
 }

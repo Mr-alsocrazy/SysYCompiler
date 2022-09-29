@@ -3,4 +3,4 @@ project(LexicalAnalysis)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(LexicalAnalysis main.cpp lexer.h lexer.cpp Token.cpp Token.h tables.h)
+add_executable(LexicalAnalysis main.cpp lexer.h lexer.cpp Token.cpp Token.h tables.h parser.cpp parser.h exception.h)

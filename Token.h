@@ -33,6 +33,8 @@ public:
     const table::sym &get_symcode() const {
         return symcode;
     }
+
+    string token_str() const;
 };
 
 
