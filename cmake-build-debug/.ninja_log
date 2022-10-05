@@ -1,6 +1,10 @@
 # ninja log v5
-10	725	6856393580058687	CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj	12ec3154b5149de9
-3	1188	6856393584668074	CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj	a30f8cc4b3c04184
-3	786	6856409399322432	CMakeFiles/LexicalAnalysis.dir/main.cpp.obj	ce741f1bf2dbc926
-786	1009	6856409401527428	LexicalAnalysis.exe	a959273195eddd48
-12	990	6856393582711565	CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj	c304b92e4daf6758
+21	1347	6865844830936526	CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj	a30f8cc4b3c04184
+27	850	6865844825958596	CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj	12ec3154b5149de9
+4	1126	6865844828731792	CMakeFiles/LexicalAnalysis.dir/main.cpp.obj	ce741f1bf2dbc926
+1353	1690	6865844834327554	LexicalAnalysis.exe	a959273195eddd48
+24	1352	6865844830994855	CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj	c304b92e4daf6758
+3	1226	6865845257646271	CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj	c304b92e4daf6758
+1226	1667	6865845262014579	LexicalAnalysis.exe	a959273195eddd48
+6	2059	6865847615537835	CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj	c304b92e4daf6758
+2060	2519	6865847620076143	LexicalAnalysis.exe	a959273195eddd48

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-static vector<shared_ptr<Token>> token_vec;
+extern vector<shared_ptr<Token>> token_vec;
 
 static bool record_format;
 
@@ -45,9 +45,9 @@ public:
 
     void get_sym();
 
-    const ifstream& get_ifs() const { return ifs; }
-
     void print_tk();
+
+    void lexing();
 };
 
 

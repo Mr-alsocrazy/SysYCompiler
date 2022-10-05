@@ -7,7 +7,11 @@ using namespace std;
 
 int main() {
     lexer lxr("testfile.txt");
-    lxr.print_tk();
-    parser psr();
+    lxr.lexing();
+//    lxr.print_tk();
+
+    parser psr;
+    psr.parse();
+    parser::print_psr();
     return 0;
 }

@@ -4,13 +4,14 @@
 
 #ifndef LEXICALANALYSIS_PARSER_H
 #define LEXICALANALYSIS_PARSER_H
+
 #include "Token.h"
 #include "lexer.h"
 #include <fstream>
 #include <memory>
 #include <string>
 
-static vector<shared_ptr<string>> to_print;
+extern vector<shared_ptr<string>> to_print;
 
 class parser {
 private:
@@ -18,21 +19,22 @@ private:
     int token_pos;
     int token_len;
 public:
-    parser() :token_pos(0), cur_token(nullptr) {
+    parser() : token_pos(0), cur_token(nullptr) {
         cur_token = token_vec.at(token_pos);
         token_len = token_vec.size();
     }
+
     void parse();
 
     void next_token();
 
-    void previous_token();
+    void prev_token();
 
     table::sym cur_token_sym() const;
 
     void judge_sym(table::sym cur_sym);
 
-    static void print_grm(const basic_string<char>& grm_name);
+    static void print_grm(const basic_string<char> &grm_name);
 
     void comp_unit();
 
@@ -83,6 +85,16 @@ public:
     void stmt();
 
     void cond();
+
+    void l_or_exp();
+
+    void l_and_exp();
+
+    void eq_exp();
+
+    void rel_exp();
+
+    static void print_psr();
 };
 
 

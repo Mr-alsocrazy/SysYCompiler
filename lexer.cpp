@@ -5,6 +5,14 @@
 
 #include <memory>
 
+vector<shared_ptr<Token>> token_vec;
+
+void lexer::lexing() {
+    while (!is_end) {
+        get_sym();
+    }
+}
+
 void lexer::print_tk() {
     while (!is_end) {
         get_sym();

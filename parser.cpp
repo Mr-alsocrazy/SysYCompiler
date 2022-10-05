@@ -1,22 +1,40 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
 //
 // Created by Administrator on 2022/9/22.
 //
 
 #include "parser.h"
 
+vector<shared_ptr<string>> to_print;
+
 void parser::parse() {
     comp_unit();
 }
 
-void parser::next_token() {
-    cur_token = token_vec.at(token_pos++);
-    to_print.push_back(make_shared<string>(cur_token->token_str()));
+void parser::print_psr() {
+    auto it = to_print.begin();
+    std::ofstream ofs;
+    ofs.open("output.txt");
+    for (; it != to_print.end(); it++) {
+        ofs << **it << endl;
+    }
+    ofs.close();
 }
 
-void parser::previous_token() {
+void parser::next_token() {
+    if (token_pos < token_len - 1) {
+        to_print.push_back(make_shared<string>(cur_token->token_str()));
+//        std::cout << cur_token->token_str() << std::endl;
+        cur_token = token_vec.at(++token_pos);
+    } else if (token_pos == token_len - 1) {
+        cur_token = token_vec.at(token_pos);
+        to_print.push_back(make_shared<string>(cur_token->token_str()));
+    }
+}
+
+void parser::prev_token() {
     cur_token = token_vec.at(--token_pos);
+    while (to_print.back()->at(0) == '<')
+        to_print.pop_back();
     to_print.pop_back();
 }
 
@@ -33,8 +51,8 @@ void parser::judge_sym(table::sym cur_sym) {
 }
 
 void parser::print_grm(const string &grm_name) {
-    std::cout << ('<' + grm_name + '>') << std::endl;
     to_print.push_back(make_shared<string>('<' + grm_name + '>'));
+//    std::cout << '<' + grm_name + '>' << std::endl;
 }
 
 void parser::comp_unit() {
@@ -47,16 +65,16 @@ void parser::comp_unit() {
             if (cur_token_sym() == table::sym::IDENFR) {
                 next_token();
                 if (cur_token_sym() == table::sym::LPARENT) {
-                    previous_token();
-                    previous_token();
+                    prev_token();
+                    prev_token();
                     func_def();
                 } else {
-                    previous_token();
-                    previous_token();
+                    prev_token();
+                    prev_token();
                     decl();
                 }
             } else if (cur_token_sym() == table::sym::MAINTK) {
-                previous_token();
+                prev_token();
                 main_func_def();
             } else {
                 throw exception();
@@ -103,7 +121,7 @@ void parser::const_def() {
         const_exp();
         judge_sym(table::sym::RBRACK);
     }
-    judge_sym(table::sym::EQL);
+    judge_sym(table::sym::ASSIGN);
     const_init_val();
     print_grm("ConstDef");
 }
@@ -133,6 +151,7 @@ void parser::var_decl() {
         var_def();
     }
     judge_sym(table::sym::SEMICN);
+    print_grm("VarDecl");
 }
 
 void parser::var_def() {
@@ -177,12 +196,11 @@ void parser::main_func_def() {
 
 void parser::func_def() {
     while (cur_token_sym() == table::sym::INTTK || cur_token_sym() == table::sym::VOIDTK) {
-        next_token();
+        func_type();
         if (cur_token_sym() == table::sym::MAINTK) {
-            previous_token();
+            prev_token();
             break;
         }
-        func_type();
         judge_sym(table::sym::IDENFR);
         judge_sym(table::sym::LPARENT);
         if (cur_token_sym() != table::sym::RPARENT) {
@@ -206,12 +224,14 @@ void parser::func_F_params() {
 void parser::func_F_param() {
     judge_sym(table::sym::INTTK);
     judge_sym(table::sym::IDENFR);
-    judge_sym(table::sym::LBRACK);
-    judge_sym(table::sym::RBRACK);
-    while (cur_token_sym() == table::sym::LBRACK) {
+    if (cur_token_sym() == table::sym::LBRACK) {
         next_token();
-        const_exp();
         judge_sym(table::sym::RBRACK);
+        while (cur_token_sym() == table::sym::LBRACK) {
+            next_token();
+            const_exp();
+            judge_sym(table::sym::RBRACK);
+        }
     }
     print_grm("FuncFParam");
 }
@@ -231,6 +251,7 @@ void parser::func_type() {
     } else {
         throw exception();
     }
+    print_grm("FuncType");
 }
 
 void parser::const_exp() {
@@ -267,11 +288,16 @@ void parser::mul_exp() {
 void parser::unary_exp() {
     if (cur_token_sym() == table::sym::IDENFR) {
         next_token();
-        judge_sym(table::sym::LPARENT);
-        if (cur_token_sym() != table::sym::RPARENT) {
-            func_R_params();
+        if (cur_token_sym() == table::sym::LPARENT) {
+            next_token();
+            if (cur_token_sym() != table::sym::RPARENT) {
+                func_R_params();
+            }
+            judge_sym(table::sym::RPARENT);
+        } else {
+            prev_token();
+            primary_exp();
         }
-        judge_sym(table::sym::RPARENT);
     } else if (cur_token_sym() == table::sym::PLUS ||
                cur_token_sym() == table::sym::MINU ||
                cur_token_sym() == table::sym::NOT) {
@@ -315,6 +341,7 @@ void parser::block() {
     while (cur_token_sym() != table::sym::RBRACE) {
         block_item();
     }
+    judge_sym(table::sym::RBRACE);
     print_grm("Block");
 }
 
@@ -324,6 +351,130 @@ void parser::block_item() {
     } else {
         stmt();
     }
-    print_grm("BlockItem");
 }
 
+void parser::stmt() {
+    if (cur_token_sym() == table::sym::IFTK) {
+        next_token();
+        judge_sym(table::sym::LPARENT);
+        cond();
+        judge_sym(table::sym::RPARENT);
+        stmt();
+        if (cur_token_sym() == table::sym::ELSETK) {
+            next_token();
+            stmt();
+        }
+    } else if (cur_token_sym() == table::sym::WHILETK) {
+        next_token();
+        judge_sym(table::sym::LPARENT);
+        cond();
+        judge_sym(table::sym::RPARENT);
+        stmt();
+    } else if (cur_token_sym() == table::sym::BREAKTK || cur_token_sym() == table::sym::CONTINUETK) {
+        next_token();
+        judge_sym(table::sym::SEMICN);
+    } else if (cur_token_sym() == table::sym::RETURNTK) {
+        next_token();
+        if (cur_token_sym() != table::sym::SEMICN) {
+            exp();
+        }
+        judge_sym(table::sym::SEMICN);
+    } else if (cur_token_sym() == table::sym::PRINTFTK) {
+        next_token();
+        judge_sym(table::sym::LPARENT);
+        judge_sym(table::sym::STRCON);
+        while (cur_token_sym() == table::sym::COMMA) {
+            next_token();
+            exp();
+        }
+        judge_sym(table::sym::RPARENT);
+        judge_sym(table::sym::SEMICN);
+    } else if (cur_token_sym() == table::sym::LBRACE) {
+        block();
+    } else if (cur_token_sym() == table::sym::IDENFR) {
+        next_token();
+        if (cur_token_sym() != table::sym::LPARENT) {
+            prev_token();
+            int tmp_tkps = token_pos;
+            int p_len = to_print.size();
+            lval();
+            if (cur_token_sym() != table::sym::ASSIGN) {
+                token_pos = tmp_tkps;
+                cur_token = token_vec.at(token_pos);
+                int p_cur_len = to_print.size();
+                for (int i = p_cur_len; i > p_len; --i) {
+                    to_print.pop_back();
+                }
+                exp();
+                judge_sym(table::sym::SEMICN);
+            } else {
+                next_token();
+                if (cur_token_sym() == table::sym::GETINTTK) {
+                    next_token();
+                    judge_sym(table::sym::LPARENT);
+                    judge_sym(table::sym::RPARENT);
+                } else {
+                    exp();
+                }
+                judge_sym(table::sym::SEMICN);
+            }
+        } else {
+            prev_token();
+            exp();
+            judge_sym(table::sym::SEMICN);
+        }
+    } else if (cur_token_sym() == table::sym::LPARENT || cur_token_sym() == table::sym::INTTK || cur_token_sym() == table::sym::INTCON
+                || cur_token_sym() == table::sym::PLUS || cur_token_sym() == table::sym::MINU || cur_token_sym() == table::sym::NOT) {
+        exp();
+        judge_sym(table::sym::SEMICN);
+    } else {
+        judge_sym(table::sym::SEMICN);
+    }
+    print_grm("Stmt");
+}
+
+void parser::cond() {
+    l_or_exp();
+    print_grm("Cond");
+}
+
+void parser::l_or_exp() {
+    l_and_exp();
+    print_grm("LOrExp");
+    while (cur_token_sym() == table::sym::OR) {
+        next_token();
+        l_and_exp();
+        print_grm("LOrExp");
+    }
+}
+
+void parser::l_and_exp() {
+    eq_exp();
+    print_grm("LAndExp");
+    while (cur_token_sym() == table::sym::AND) {
+        next_token();
+        eq_exp();
+        print_grm("LAndExp");
+    }
+}
+
+void parser::eq_exp() {
+    rel_exp();
+    print_grm("EqExp");
+    while (cur_token_sym() == table::sym::EQL || cur_token_sym() == table::sym::NEQ) {
+        next_token();
+        rel_exp();
+        print_grm("EqExp");
+    }
+}
+
+void parser::rel_exp() {
+    add_exp();
+    print_grm("RelExp");
+    while (cur_token_sym() == table::sym::GRE || cur_token_sym() == table::sym::LSS ||
+           cur_token_sym() == table::sym::GEQ || cur_token_sym() == table::sym::LEQ) {
+        next_token();
+        add_exp();
+        print_grm("RelExp");
+    }
+}

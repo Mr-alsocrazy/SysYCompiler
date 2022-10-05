@@ -34,6 +34,10 @@ public:
         return symcode;
     }
 
+    const int &get_linenum() const {
+        return line;
+    }
+
     string token_str() const;
 };
 
