@@ -18,7 +18,7 @@ private:
     int value{};
     int line;
 public:
-    Token(table::sym _symcode, int lime_num) : symcode(_symcode), name(""), line(lime_num) {}
+    Token(table::sym _symcode, int lime_num) : symcode(_symcode), line(lime_num) {}
 
     Token(table::sym _symcode, string _name, int lime_num) :
             symcode(_symcode), name(std::move(_name)), line(lime_num) {}

@@ -162,6 +162,11 @@ inline void lexer::next_char() {
         is_end = true;
     } else {
         getline(ifs, cur_line);
+        while (cur_line.empty()) {
+            lpos++;
+            getline(ifs, cur_line);
+        }
+        lpos++;
         cur_char = ' ';
         cpos = 0;
         line_length = cur_line.size();
@@ -209,7 +214,7 @@ void lexer::get_sym() {
             match += cur_char;
             next_char();
         }
-        token_vec.push_back(std::make_shared<Token>(table::sym::INTCON, match, lpos));
+        token_vec.push_back(std::make_shared<Token>(table::sym::INTCON, stoi(match), lpos));
     } else if (cur_char == '(') {
         next_char();
         token_vec.push_back(std::make_shared<Token>(table::sym::LPARENT, lpos));

@@ -1,8 +1,0 @@
-//
-// Created by Administrator on 2022/9/26.
-//
-
-#ifndef LEXICALANALYSIS_EXCEPTION_H
-#define LEXICALANALYSIS_EXCEPTION_H
-
-#endif //LEXICALANALYSIS_EXCEPTION_H

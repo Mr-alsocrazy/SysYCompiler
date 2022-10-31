@@ -20,6 +20,42 @@ namespace table {
         RBRACK, LBRACE, RBRACE, NONETYPE
     };
 
+    enum class error_type {
+        SYMBOL_ILLICIT,
+        IDENFR_REDEF,
+        IDENFR_UNDEF,
+        PARA_NUM_NOT_MATCH,
+        PARA_TYPE_NOT_MATCH,
+        RETURN_NOT_MATCH,
+        NO_RETURN,
+        CONST_MODIFY,
+        NO_SEMICN,
+        NO_RPARENT,
+        NO_RBRACK,
+        PRINTF_PARA_NOT_MATCH,
+        CONTINUE_BREAK_ERR
+    };
+
+    enum class identifier {
+        INTEGER, ONE_DIMENSION_ARRAY, TWO_DIMENSION_ARRAY, VOID, UNDEF
+    };
+
+    static unordered_map<error_type, string> error_table = {
+            {error_type::SYMBOL_ILLICIT,        "a"}, // done
+            {error_type::IDENFR_REDEF,          "b"}, // done
+            {error_type::IDENFR_UNDEF,          "c"},
+            {error_type::PARA_NUM_NOT_MATCH,    "d"},
+            {error_type::PARA_TYPE_NOT_MATCH,   "e"}, // done
+            {error_type::RETURN_NOT_MATCH,      "f"},
+            {error_type::NO_RETURN,             "g"}, // done
+            {error_type::CONST_MODIFY,          "h"},
+            {error_type::NO_SEMICN,             "i"},
+            {error_type::NO_RPARENT,            "j"},
+            {error_type::NO_RBRACK,             "k"}, // done
+            {error_type::PRINTF_PARA_NOT_MATCH, "l"}, // done
+            {error_type::CONTINUE_BREAK_ERR,    "m"}  // done
+    };
+
     static unordered_map<string, sym> reserved = {
         {"main",     sym::MAINTK},
         {"const",    sym::CONSTTK},

@@ -11,9 +11,6 @@ string Token::token_str() const {
             case table::sym::IDENFR:
                 str = "IDENFR " + name;
                 break;
-            case table::sym::INTCON:
-                str = "INTCON " + name;
-                break;
             case table::sym::STRCON:
                 str = "STRCON " + name;
                 break;
@@ -22,6 +19,9 @@ string Token::token_str() const {
         }
     } else {
         switch (get_symcode()) {
+            case table::sym::INTCON:
+                str = "INTCON " + std::to_string(value);
+                break;
             case table::sym::PRINTFTK:
                 str = "PRINTFTK printf";
                 break;
