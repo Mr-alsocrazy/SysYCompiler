@@ -91,6 +91,18 @@ build CMakeFiles/LexicalAnalysis.dir/func.cpp.obj: CXX_COMPILER__LexicalAnalysis
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
   OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
 
+build CMakeFiles/LexicalAnalysis.dir/pcode.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/pcode.cpp || cmake_object_order_depends_target_LexicalAnalysis
+  DEP_FILE = CMakeFiles\LexicalAnalysis.dir\pcode.cpp.obj.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
+  OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
+
+build CMakeFiles/LexicalAnalysis.dir/interpreter.cpp.obj: CXX_COMPILER__LexicalAnalysis_Debug E$:/programmes/compiler/Compiler/interpreter.cpp || cmake_object_order_depends_target_LexicalAnalysis
+  DEP_FILE = CMakeFiles\LexicalAnalysis.dir\interpreter.cpp.obj.d
+  FLAGS = -g -std=gnu++11
+  OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir
+  OBJECT_FILE_DIR = CMakeFiles\LexicalAnalysis.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target LexicalAnalysis
@@ -99,7 +111,7 @@ build CMakeFiles/LexicalAnalysis.dir/func.cpp.obj: CXX_COMPILER__LexicalAnalysis
 #############################################
 # Link the executable LexicalAnalysis.exe
 
-build LexicalAnalysis.exe: CXX_EXECUTABLE_LINKER__LexicalAnalysis_Debug CMakeFiles/LexicalAnalysis.dir/main.cpp.obj CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj CMakeFiles/LexicalAnalysis.dir/error.cpp.obj CMakeFiles/LexicalAnalysis.dir/ident.cpp.obj CMakeFiles/LexicalAnalysis.dir/func.cpp.obj
+build LexicalAnalysis.exe: CXX_EXECUTABLE_LINKER__LexicalAnalysis_Debug CMakeFiles/LexicalAnalysis.dir/main.cpp.obj CMakeFiles/LexicalAnalysis.dir/lexer.cpp.obj CMakeFiles/LexicalAnalysis.dir/Token.cpp.obj CMakeFiles/LexicalAnalysis.dir/parser.cpp.obj CMakeFiles/LexicalAnalysis.dir/error.cpp.obj CMakeFiles/LexicalAnalysis.dir/ident.cpp.obj CMakeFiles/LexicalAnalysis.dir/func.cpp.obj CMakeFiles/LexicalAnalysis.dir/pcode.cpp.obj CMakeFiles/LexicalAnalysis.dir/interpreter.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\LexicalAnalysis.dir

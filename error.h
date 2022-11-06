@@ -14,10 +14,12 @@ private:
     int line_num;
     table::error_type type;
 public:
-    error(int _line_num, table::error_type _type):
-        line_num(_line_num), type(_type) {}
+    error(int _line_num, table::error_type _type) :
+            line_num(_line_num), type(_type) {}
 
     string to_string() const;
+
+    int get_line_num() const { return line_num; }
 };
 
 

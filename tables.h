@@ -36,6 +36,12 @@ namespace table {
         CONTINUE_BREAK_ERR
     };
 
+    enum class pcode {
+        LOAD, LOADI, STO, STORIN, ADD, POS, SUB, NEG, MULT, DIV, MOD, BR, BRF, BRG, BRLES, BRGE, BRLE, BREQ, BRNEQ,
+        EQ, NEQ, GEQ, LEQ, GT, LES, AND, OR, NOT, SETD1, SETD2, J, RE, GETINT, PRINT, INB, OUTB, NEW, BOUND1,
+        BOUND2, SETD1R, SETD2R, TYPE, FRP, PARAMEND, FUNCDEF, ANDUNIT, ORUNIT, LABEL, ELEM, END
+    };
+
     enum class identifier {
         INTEGER, ONE_DIMENSION_ARRAY, TWO_DIMENSION_ARRAY, VOID, UNDEF
     };
@@ -43,12 +49,12 @@ namespace table {
     static unordered_map<error_type, string> error_table = {
             {error_type::SYMBOL_ILLICIT,        "a"}, // done
             {error_type::IDENFR_REDEF,          "b"}, // done
-            {error_type::IDENFR_UNDEF,          "c"},
-            {error_type::PARA_NUM_NOT_MATCH,    "d"},
+            {error_type::IDENFR_UNDEF,          "c"}, // done
+            {error_type::PARA_NUM_NOT_MATCH,    "d"}, // done
             {error_type::PARA_TYPE_NOT_MATCH,   "e"}, // done
-            {error_type::RETURN_NOT_MATCH,      "f"},
+            {error_type::RETURN_NOT_MATCH,      "f"}, // done
             {error_type::NO_RETURN,             "g"}, // done
-            {error_type::CONST_MODIFY,          "h"},
+            {error_type::CONST_MODIFY,          "h"}, // done
             {error_type::NO_SEMICN,             "i"},
             {error_type::NO_RPARENT,            "j"},
             {error_type::NO_RBRACK,             "k"}, // done

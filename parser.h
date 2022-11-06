@@ -10,6 +10,7 @@
 #include "error.h"
 #include "ident.h"
 #include "func.h"
+#include "pcode.h"
 #include <fstream>
 #include <memory>
 #include <string>
@@ -19,6 +20,8 @@
 extern vector<shared_ptr<string>> to_print;
 extern bool can_return;
 extern bool can_check_func_R;
+extern vector<shared_ptr<pcode>> code_vec;
+extern size_t main_idx;
 
 class parser {
 private:
@@ -26,13 +29,13 @@ private:
     std::vector<error> error_vec;
     int token_pos;
     int token_len;
-    vector<shared_ptr<vector<shared_ptr<ident>>>> ident_table;
+    vector<vector<shared_ptr<ident>>> ident_table;
     vector<shared_ptr<func>> func_table;
 public:
     parser() : token_pos(0), cur_token(nullptr) {
         cur_token = token_vec.at(token_pos);
         token_len = token_vec.size();
-        ident_table.push_back(make_shared<vector<shared_ptr<ident>>>());
+        ident_table.emplace_back();
     }
 
     void parse();
@@ -75,7 +78,7 @@ public:
 
     void func_F_param();
 
-    void func_R_params(const shared_ptr<func>& F, int i);
+    void func_R_params(const shared_ptr<func> &F, int line_num);
 
     void const_exp();
 
@@ -113,9 +116,13 @@ public:
 
     static void print_psr();
 
+    void print_err();
+
+    static void print_pcode();
+
     void make_error(int line_num, table::error_type type);
 
-    bool ident_exist(ident I) const;
+    bool ident_exist(const ident &I) const;
 
     void add_ident(const ident &I);
 
@@ -123,9 +130,19 @@ public:
 
     void add_func(const func &F);
 
-    shared_ptr<func> find_func(const string& str);
+    shared_ptr<func> find_func(const string &str);
 
-    shared_ptr<ident> find_ident(const string& str);
+    shared_ptr<ident> find_ident(const string &str);
+
+    void add_pcode(table::pcode code, const std::shared_ptr<ident> &id);
+
+    void add_pcode(table::pcode code, const std::string &label);
+
+    void add_pcode(table::pcode code, int instant);
+
+    void add_pcode(table::pcode code);
+
+    void add_pcode(const std::string &label);
 };
 
 

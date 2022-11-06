@@ -133,5 +133,6 @@ string Token::token_str() const {
             }
         }
     }
+    str += (" " + std::to_string(line));
     return str;
 }

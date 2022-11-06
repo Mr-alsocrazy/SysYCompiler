@@ -24,7 +24,7 @@ private:
     ifstream ifs;
     char cur_char;
     string cur_line;
-    int line_length;
+    size_t line_length;
     int l_id;
     int cpos;
     int lpos;
