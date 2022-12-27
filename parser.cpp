@@ -7,8 +7,8 @@
 #include "parser.h"
 //#define PSR_DEBUG
 
-vector<shared_ptr<string>> to_print;
-using ident_block = vector<shared_ptr<ident>>;
+std::vector<shared_ptr<string>> to_print;
+using ident_block = std::vector<shared_ptr<ident>>;
 using tid = table::identifier;
 using tsy = table::sym;
 using tet = table::error_type;
@@ -17,6 +17,7 @@ bool can_return = false; //是否需要返回值
 bool can_check_func_R = false; //是否进行函数实参检查
 bool is_func_block = false; //是否是函数定义产生的Block
 bool is_void_func = false;
+bool is_loop = false;
 bool in_main = false;
 int block_layer = 0;
 bool attain_v_return = false;
@@ -24,6 +25,10 @@ bool over_exp = false;
 int lval_in_exp = 0;
 int dimension_decl = 0;
 bool func_start = false;
+int label_num = 0;
+std::vector<int> loop;
+std::vector<int> block_in_loop;
+std::map<int, std::string> loop_map;
 size_t main_idx = 0;
 std::vector<std::shared_ptr<ident>> func_params;
 std::vector<shared_ptr<pcode>> code_vec;
@@ -147,7 +152,7 @@ void parser::const_decl() {
 void parser::const_def() {
     if (cur_token_sym() == tsy::IDENFR) {
         int line_num = cur_token->get_linenum();
-        ident idenfr(cur_token, true);
+        ident idenfr(*cur_token, true);
         add_pcode(tp::NEW, std::make_shared<ident>(idenfr));
         next_token();
         size_t idx(code_vec.size() - 1);
@@ -165,7 +170,7 @@ void parser::const_def() {
             }
         }
         idenfr.set_ident_type(ident::get_ident_type(dimension_decl));
-        if (ident_exist(idenfr)) {
+        if (ident_exist_def(idenfr)) {
             make_error(line_num, tet::IDENFR_REDEF);
         } else {
             add_ident(idenfr);
@@ -215,7 +220,7 @@ void parser::var_decl() {
 
 void parser::var_def() {
     if (cur_token_sym() == tsy::IDENFR) {
-        ident idenfr(cur_token, false);
+        ident idenfr(*cur_token, false);
         add_pcode(tp::NEW, make_shared<ident>(idenfr));
         int line_num = cur_token->get_linenum();
         next_token();
@@ -234,7 +239,7 @@ void parser::var_def() {
             }
         }
         idenfr.set_ident_type(ident::get_ident_type(dimension_decl));
-        if (ident_exist(idenfr)) {
+        if (ident_exist_def(idenfr)) {
             make_error(line_num, tet::IDENFR_REDEF);
         } else {
             add_ident(idenfr);
@@ -266,7 +271,7 @@ void parser::init_val() {
         judge_sym(tsy::RBRACE);
     } else {
         exp();
-        if (dimension_decl > 1)
+        if (dimension_decl > 0)
             add_pcode(tp::ELEM);
     }
     print_grm("InitVal");
@@ -371,7 +376,7 @@ void parser::func_F_param() {
     judge_sym(tsy::INTTK);
     if (cur_token_sym() == tsy::IDENFR) {
         int dimension = 0;
-        ident func_idenfr(cur_token, false);
+        ident func_idenfr(*cur_token, false);
         int line_num = cur_token->get_linenum();
         next_token();
         if (cur_token_sym() == tsy::LBRACK) {
@@ -388,7 +393,7 @@ void parser::func_F_param() {
             }
         }
         func_idenfr.set_ident_type(ident::get_ident_type(dimension));
-        if (ident_exist(func_idenfr)) {
+        if (ident_exist_def(func_idenfr)) {
             make_error(line_num, tet::IDENFR_REDEF);
         } else {
             add_ident(func_idenfr);
@@ -603,8 +608,8 @@ tid parser::lval() {
     bool nid(false);
     tid result(tid::INTEGER);
     if (cur_token_sym() == table::sym::IDENFR) {
-        ident id(ident(shared_ptr<Token>(cur_token), false));
-        if (!ident_exist(id)) {
+        ident id(ident(Token(*cur_token), false));
+        if (!ident_exist_lval(id)) {
             make_error(cur_token->get_linenum(), tet::IDENFR_UNDEF);
         } else {
             result = find_ident(cur_token->get_name())->get_ident_type();
@@ -746,36 +751,73 @@ bool parser::block_item(bool require_return, bool is_cycle) {
 bool parser::stmt(bool require_return, bool is_cycle) {
     int line_num = cur_token->get_linenum();
     if (cur_token_sym() == tsy::IFTK) {
+        bool else_exist = false;
         next_token();
         int ln_ifbr = cur_token->get_linenum();
         judge_sym(tsy::LPARENT);
         cond();
+        string label = get_label();
+        add_pcode(tp::BRF, label + "F");
         judge_err(tsy::RPARENT, ln_ifbr, tet::NO_RPARENT);
-        if (require_return) {
+        if (require_return)
             can_return = true;
-        }
         stmt(false, is_cycle);
+        attain_v_return = false;
         if (cur_token_sym() == tsy::ELSETK) {
+            else_exist = true;
+            string end = get_label();
+            add_pcode(tp::BR, end);
+            add_pcode(label + "F");
             next_token();
             if (require_return)
                 can_return = true;
             stmt(false, is_cycle);
+            attain_v_return = false;
+            add_pcode(end);
         }
+        if (!else_exist)
+            add_pcode(label + "F");
     } else if (cur_token_sym() == tsy::WHILETK) {
+        int loop_line = cur_token->get_linenum();
+        loop.push_back(loop_line);
+        block_in_loop.push_back(0);
         next_token();
         int ln_whbr = cur_token->get_linenum();
-        judge_sym(tsy::LPARENT);
-        cond();
-        judge_err(tsy::RPARENT, ln_whbr, tet::NO_RPARENT);
-        can_return = require_return;
-        stmt(false, true);
-        can_return = false;
-    } else if (cur_token_sym() == tsy::BREAKTK || cur_token_sym() == tsy::CONTINUETK) {
-        if (!is_cycle) {
-            make_error(cur_token->get_linenum(), tet::CONTINUE_BREAK_ERR);
+        if (cur_token_sym() == tsy::LPARENT) {
+            string loop_label = get_label();
+            loop_map.insert(std::make_pair(loop_line, loop_label));
+            add_pcode(loop_label);
+            next_token();
+            cond();
+            add_pcode(tp::BRF, loop_label + "F");
+            judge_err(tsy::RPARENT, ln_whbr, tet::NO_RPARENT);
+            can_return = require_return;
+            is_loop = true;
+            stmt(false, true);
+            attain_v_return = false;
+            can_return = false;
+            loop.pop_back();
+            block_in_loop.pop_back();
+            add_pcode(tp::BR, loop_label);
+            add_pcode(loop_label + "F");
+        } else {
+            throw exception();
         }
+    } else if (cur_token_sym() == tsy::BREAKTK || cur_token_sym() == tsy::CONTINUETK) {
+        if (!is_cycle)
+            make_error(cur_token->get_linenum(), tet::CONTINUE_BREAK_ERR);
+        int cur_loop = loop.empty() ? 0 : loop.back();
         int ln_cbbr = cur_token->get_linenum();
+        tsy symbol = cur_token_sym();
         next_token();
+        string out_label = loop_map.at(cur_loop);
+        int blrk = block_in_loop.empty() ? 0 : block_in_loop.back();
+        for (int i = 0; i < blrk; i++)
+            add_pcode(tp::OUTB);
+        if (symbol == tsy::BREAKTK)
+            add_pcode(tp::BR, out_label + 'F');
+        else
+            add_pcode(tp::BR, out_label);
         judge_err(tsy::SEMICN, line_num, tet::NO_SEMICN);
     } else if (cur_token_sym() == tsy::RETURNTK) {
         bool return_exist(false);
@@ -865,9 +907,13 @@ bool parser::stmt(bool require_return, bool is_cycle) {
     } else if (cur_token_sym() == tsy::LBRACE) {
         if (require_return)
             can_return = true;
+        if (is_loop && !block_in_loop.empty())
+            block_in_loop.back()++;
         block(false, is_cycle, false);
+        if (is_loop && !block_in_loop.empty())
+            block_in_loop.back()--;
     } else if (cur_token_sym() == tsy::IDENFR) {
-        ident assign = ident(shared_ptr<Token>(cur_token), false);
+        ident assign = ident(Token(*cur_token), false);
         next_token();
         if (cur_token_sym() != tsy::LPARENT) {
             prev_token();
@@ -892,7 +938,7 @@ bool parser::stmt(bool require_return, bool is_cycle) {
                 over_exp = false;
                 judge_err(tsy::SEMICN, ln_asbr, tet::NO_SEMICN);
             } else {
-                auto item = find_ident(assign.get_ident()->get_name());
+                auto item = find_ident(assign.get_ident().get_name());
                 if (item && item->get_is_const()) {
                     make_error(cur_token->get_linenum(), tet::CONST_MODIFY);
                 } else if (!item) {
@@ -949,6 +995,10 @@ void parser::l_or_exp() {
         print_grm("LOrExp");
         add_pcode(tp::OR);
     }
+    if (!or_exist)
+        code_vec.pop_back();
+    else
+        add_pcode(tp::OREND);
 }
 
 void parser::l_and_exp() {
@@ -964,17 +1014,21 @@ void parser::l_and_exp() {
         print_grm("LAndExp");
         add_pcode(tp::AND);
     }
+    if (!and_exist)
+        code_vec.pop_back();
+    else
+        add_pcode(tp::ANDEND);
 }
 
 void parser::eq_exp() {
     rel_exp();
     print_grm("EqExp");
     while (cur_token_sym() == tsy::EQL or cur_token_sym() == tsy::NEQ) {
-        tsy ans = cur_token_sym();
+        tsy symbol = cur_token_sym();
         next_token();
         rel_exp();
         print_grm("EqExp");
-        if (ans == tsy::EQL)
+        if (symbol == tsy::EQL)
             add_pcode(tp::EQ);
         else
             add_pcode(tp::NEQ);
@@ -986,11 +1040,11 @@ void parser::rel_exp() {
     print_grm("RelExp");
     while (cur_token_sym() == tsy::GRE || cur_token_sym() == tsy::LSS ||
            cur_token_sym() == tsy::GEQ || cur_token_sym() == tsy::LEQ) {
-        tsy ans = cur_token_sym();
+        tsy rel_symbol = cur_token_sym();
         next_token();
         add_exp();
         print_grm("RelExp");
-        switch (ans) {
+        switch (rel_symbol) {
             case tsy::GRE:
                 add_pcode(tp::GT);
                 break;
@@ -1025,7 +1079,14 @@ void parser::judge_err(tsy cur_sym, int line_num, tet err) {
     }
 }
 
-bool parser::ident_exist(const ident &I) const {
+bool parser::ident_exist_def(const ident &I) const {
+    for (auto &item : ident_table.back())
+        if (*item == I)
+            return true;
+    return false;
+}
+
+bool parser::ident_exist_lval(const ident &I) const {
     for (auto it_l1 = ident_table.rbegin(); it_l1 != ident_table.rend(); it_l1++) {
         for (auto &iptr: *it_l1) {
             if (*iptr == I)
@@ -1063,7 +1124,7 @@ shared_ptr<func> parser::find_func(const string &str) {
 shared_ptr<ident> parser::find_ident(const string &str) {
     for (auto it = ident_table.rbegin(); it != ident_table.rend(); it++) {
         for (auto &id: *it) {
-            if (id->get_ident()->get_name() == str)
+            if (id->get_ident().get_name() == str)
                 return id;
         }
     }
@@ -1112,6 +1173,10 @@ void parser::print_pcode() {
         ofs << pc->to_string() << std::endl;
     }
     ofs.close();
+}
+
+std::string parser::get_label() {
+    return std::string("label" + std::to_string(label_num++));
 }
 
 #pragma clang diagnostic pop

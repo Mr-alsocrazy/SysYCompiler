@@ -59,6 +59,8 @@ public:
         symcode = s;
     }
 
+    void snt(bool b) { nonToken = b; }
+
     string token_str() const;
 };
 

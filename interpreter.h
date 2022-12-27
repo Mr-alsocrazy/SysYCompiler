@@ -14,16 +14,21 @@
 class interpreter {
 private:
     size_t main_idx;
-    std::vector<shared_ptr<ident>> opr;
-    std::vector<std::vector<shared_ptr<ident>>> itbl;
+    std::vector<ident> opr;
+    std::vector<std::vector<ident>> itbl;
     std::vector<bool> array_assign;
     std::vector<int> idx_list;
     std::vector<int> dimension_1, dimension_2;
     std::vector<std::string> output;
     size_t cur_idx;
     table::identifier cur_ident_type;
+    bool true_exist;
+    bool false_exist;
+    int true_cnt = 0;
+    int false_cnt = 0;
 public:
-    explicit interpreter(size_t _main_idx) : main_idx(_main_idx), cur_idx(0) {
+    explicit interpreter(size_t _main_idx) : main_idx(_main_idx), cur_idx(0), true_exist(false), false_exist(false),
+                                                true_cnt(0), false_cnt(0){
         dimension_1.push_back(-1);
         dimension_2.push_back(-1);
         itbl.emplace_back();
@@ -35,15 +40,17 @@ public:
 
     void load_ident();
 
-    void sto(std::shared_ptr<ident> idptr);
+    void sto(ident &id);
 
     void storin();
 
-    void load(const std::shared_ptr<ident> &idptr);
+    void load(const ident &id);
 
     void loadi(int instant);
 
     void br(std::string &label);
+
+    void brf(std::string &label);
 
     void j(std::string &label);
 
@@ -61,6 +68,32 @@ public:
 
     void mod();
 
+    void andc();
+
+    void orc();
+
+    void notc();
+
+    void eq();
+
+    void neq();
+
+    void geq();
+
+    void leq();
+
+    void gt();
+
+    void les();
+
+    void and_unit();
+
+    void or_unit();
+
+    void and_end();
+
+    void or_end();
+
     void scan();
 
     void print();
@@ -73,11 +106,11 @@ public:
 
     void outb();
 
-    void newvar(const std::shared_ptr<ident> &idptr);
+    void newvar(ident &id);
 
-    void set_bound1(const std::shared_ptr<ident> &idptr);
+    void set_bound1(const ident &id);
 
-    void set_bound2(const std::shared_ptr<ident> &idptr);
+    void set_bound2(const ident &id);
 
     void elem();
 
@@ -89,13 +122,13 @@ public:
 
     void set_type(table::identifier t) { cur_ident_type = t; }
 
-    std::shared_ptr<ident> get_ident(const std::shared_ptr<ident>& idptr);
+    ident get_ident(const ident& id);
 
-    void set_ident(const std::shared_ptr<ident> &idptr);
+    void set_ident(const ident& id);
 
-    bool update_ident(const std::shared_ptr<ident>& idptr);
+    bool update_ident(const ident& id);
 
-    std::shared_ptr<ident> ident_from_stack(std::shared_ptr<ident>);
+    ident ident_from_stack(ident& id);
 
     void print_result();
 };

@@ -7,8 +7,8 @@
 using tid = table::identifier;
 
 bool ident::operator==(const ident &I) const {
-    return (ident_ptr->get_name() == I.get_ident()->get_name()
-            && ident_ptr->get_symcode() == I.get_ident()->get_symcode());
+    return (id.get_name() == I.get_ident().get_name()
+            && id.get_symcode() == I.get_ident().get_symcode());
 }
 
 tid ident::get_ident_type(int t) {
@@ -31,7 +31,7 @@ int ident::get_value(int d1, int d2) const {
         else
             return get_arr_value(d1, d2);
     } else
-        return ident_ptr->get_value();
+        return id.get_value();
 }
 
 int ident::get_value() const {
@@ -41,7 +41,7 @@ int ident::get_value() const {
         else
             return get_arr_value(dimen1, dimen2);
     } else
-        return ident_ptr->get_value();
+        return id.get_value();
 }
 
 void ident::set_value(int value, int d1, int d2) {
@@ -51,7 +51,7 @@ void ident::set_value(int value, int d1, int d2) {
         else
             two_dim_array.at(d1).at(d2) = value;
     } else
-        ident_ptr->set_value(value);
+        id.set_value(value);
 }
 
 void ident::set_value(int value) {
@@ -61,7 +61,7 @@ void ident::set_value(int value) {
         else
             two_dim_array.at(dimen1).at(dimen2) = value;
     } else
-        ident_ptr->set_value(value);
+        id.set_value(value);
 }
 
 const vector<std::string> &ident::get_used_name() const {
@@ -97,7 +97,7 @@ void ident::set_bound2(int b2) {
     bound2 = b2;
     for (int i = 0; i < bound1; i++)
         for (int j = 0; j < bound2; j++)
-            two_dim_array[i][j] = 0;
+            two_dim_array[i].push_back(0);
 }
 
 void ident::set_used_name(const vector<std::string> &_used_name) {

@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 extern vector<shared_ptr<string>> to_print;
 extern bool can_return;
@@ -122,7 +123,9 @@ public:
 
     void make_error(int line_num, table::error_type type);
 
-    bool ident_exist(const ident &I) const;
+    bool ident_exist_def(const ident &I) const;
+
+    bool ident_exist_lval(const ident &I) const;
 
     void add_ident(const ident &I);
 
@@ -143,6 +146,8 @@ public:
     void add_pcode(table::pcode code);
 
     void add_pcode(const std::string &label);
+
+    string get_label();
 };
 
 

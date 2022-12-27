@@ -34,6 +34,8 @@ public:
         idptr = std::make_shared<ident>(table::identifier::UNDEF);
     }
 
+    std::shared_ptr<ident> get_idptr() { return idptr; }
+
     int get_instant() const { return instant; }
 
     void set_instant(int _instant) { pcode::instant = _instant; }

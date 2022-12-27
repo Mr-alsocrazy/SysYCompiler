@@ -38,24 +38,6 @@ string pcode::pcode_to_string(table::pcode p) {
         case table::pcode::BRF:
             str = "BRF";
             break;
-        case table::pcode::BRG:
-            str = "BRG";
-            break;
-        case table::pcode::BRLES:
-            str = "BRLES";
-            break;
-        case table::pcode::BRGE:
-            str = "BRGE";
-            break;
-        case table::pcode::BRLE:
-            str = "BRLE";
-            break;
-        case table::pcode::BREQ:
-            str = "BREQ";
-            break;
-        case table::pcode::BRNEQ:
-            str = "BRNEQ";
-            break;
         case table::pcode::EQ:
             str = "EQ";
             break;
@@ -79,6 +61,18 @@ string pcode::pcode_to_string(table::pcode p) {
             break;
         case table::pcode::OR:
             str = "OR";
+            break;
+        case table::pcode::ANDU:
+            str = "ANDU";
+            break;
+        case table::pcode::ORU:
+            str = "ORU";
+            break;
+        case table::pcode::ANDEND:
+            str = "ANDEND";
+            break;
+        case table::pcode::OREND:
+            str = "OREND";
             break;
         case table::pcode::NOT:
             str = "NOT";
@@ -169,7 +163,7 @@ string pcode::to_string() {
         case tp::LOAD:
         case tp::STO:
             if (idptr->get_ident_type() != table::identifier::UNDEF) {
-                str = pcode_string + " " + idptr->get_ident()->get_name();
+                str = pcode_string + " " + idptr->get_ident().get_name();
             }
             break;
         case tp::LABEL:
@@ -179,13 +173,7 @@ string pcode::to_string() {
             str = pcode_string + " " + std::to_string(instant);
             break;
         case tp::BR:
-        case tp::BREQ:
         case tp::BRF:
-        case tp::BRG:
-        case tp::BRGE:
-        case tp::BRLE:
-        case tp::BRLES:
-        case tp::BRNEQ:
         case tp::J:
             str = pcode_string + " " + label;
             break;

@@ -12,28 +12,28 @@
 
 class ident {
 private:
-    shared_ptr<Token> ident_ptr;
+    Token id;
     bool is_const;
     table::identifier identype;
 public:
-    ident(shared_ptr<Token> _ident_ptr, bool _is_const) : ident_ptr(std::move(_ident_ptr)), is_const(_is_const) {
+    ident(Token _ident_ptr, bool _is_const) : id(std::move(_ident_ptr)), is_const(_is_const) {
         decl();
     }
 
-    explicit ident(shared_ptr<Token> _ident_ptr) : ident_ptr(std::move(_ident_ptr)) {
+    explicit ident(Token _ident_ptr) : id(std::move(_ident_ptr)) {
         decl();
         is_const = false;
     }
 
     explicit ident(table::identifier _identype) : identype(_identype) {
         decl();
-        ident_ptr = std::make_shared<Token>();
+        id = Token();
         is_const = false;
     }
 
     explicit ident(int instant) {
         decl();
-        ident_ptr = std::make_shared<Token>(table::sym::INTCON, instant, 0);
+        id = Token(table::sym::INTCON, instant, 0);
         is_const = true;
         identype = table::identifier::INTEGER;
     }
@@ -50,7 +50,7 @@ public:
         oitindex = -1;
     }
 
-    shared_ptr<Token> get_ident() const { return ident_ptr; }
+    Token get_ident() const { return id; }
 
     bool get_is_const() const { return is_const; }
 
@@ -108,7 +108,7 @@ public:
     void set_2darray(std::vector<std::vector<int>> _) { two_dim_array = std::move(_); }
 
 private:
-    int location;
+    size_t location;
 public:
 
     void set_dim1_dim2(std::vector<int> vec, int i) {
@@ -141,7 +141,7 @@ public:
 
     void set_location(int l) { location = l; }
 
-    int get_location() const { return location; }
+    size_t get_location() const { return location; }
 
     void add_element(int e);
 };
