@@ -93,6 +93,8 @@ public:
 
     table::identifier mul_exp();
 
+    table::identifier and_exp();
+
     table::identifier unary_exp();
 
     table::identifier primary_exp();

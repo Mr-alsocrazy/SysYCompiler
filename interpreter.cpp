@@ -38,7 +38,7 @@ void interpreter::interpret() {
         auto idptr = code_vec.at(cur_idx)->get_ident();
         tid idtype = code_vec.at(cur_idx)->get_ident()->get_ident_type();
         string label = code_vec.at(cur_idx)->get_label();
-        if (step == 78) {
+        if (step == 84) {
             foo();
         }
         switch (type) {
@@ -74,6 +74,9 @@ void interpreter::interpret() {
                 break;
             case tp::MOD:
                 mod();
+                break;
+            case tp::BITAND:
+                bitandc();
                 break;
             case tp::AND:
                 andc();
@@ -371,6 +374,15 @@ void interpreter::mod() {
     opr.pop_back();
     opr.pop_back();
     ident res(next.get_value() % pop.get_value());
+    opr.emplace_back(res);
+}
+
+void interpreter::bitandc() {
+    auto pop = opr.back();
+    auto next = opr.at(opr.size() - 2);
+    opr.pop_back();
+    opr.pop_back();
+    ident res(next.get_value() & pop.get_value());
     opr.emplace_back(res);
 }
 

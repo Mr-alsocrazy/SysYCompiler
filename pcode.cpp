@@ -151,6 +151,9 @@ string pcode::pcode_to_string(table::pcode p) {
             break;
         case table::pcode::POS:
             str = "POS";
+            break;
+        case table::pcode::BITAND:
+            str = "BITAND";
     }
     return str;
 }

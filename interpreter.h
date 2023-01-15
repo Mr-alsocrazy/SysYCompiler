@@ -68,6 +68,8 @@ public:
 
     void mod();
 
+    void bitandc();
+
     void andc();
 
     void orc();

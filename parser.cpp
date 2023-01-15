@@ -269,6 +269,12 @@ void parser::init_val() {
             }
         }
         judge_sym(tsy::RBRACE);
+    } else if (cur_token_sym() == tsy::GETINTTK) {
+        next_token();
+        add_pcode(tp::GETINT);
+        int ln_gibr = cur_token->get_linenum();
+        judge_sym(tsy::LPARENT);
+        judge_err(tsy::RPARENT, ln_gibr, tet::NO_RPARENT);
     } else {
         exp();
         if (dimension_decl > 0)
@@ -502,13 +508,13 @@ tid parser::add_exp() {
 }
 
 tid parser::mul_exp() {
-    auto result = unary_exp();
+    auto result = and_exp();
     print_grm("MulExp");
     while (cur_token_sym() == tsy::MULT || cur_token_sym() == tsy::DIV ||
            cur_token_sym() == tsy::MOD) {
         auto type = cur_token_sym();
         next_token();
-        unary_exp();
+        and_exp();
         print_grm("MulExp");
         switch (type) {
             case tsy::MULT:
@@ -522,6 +528,18 @@ tid parser::mul_exp() {
             default:
                 break;
         }
+    }
+    return result;
+}
+
+tid parser::and_exp() {
+    auto result = unary_exp();
+    print_grm("BitandExp");
+    while (cur_token_sym() == tsy::BITAND) {
+        next_token();
+        unary_exp();
+        print_grm("BitandExp");
+        add_pcode(tp::BITAND);
     }
     return result;
 }

@@ -17,7 +17,7 @@ namespace table {
         RETURNTK, PLUS, MINU, VOIDTK, MULT, DIV,
         MOD, LSS, LEQ, GRE, GEQ, EQL, NEQ, ASSIGN,
         SEMICN, COMMA, LPARENT, RPARENT, LBRACK,
-        RBRACK, LBRACE, RBRACE, NONETYPE
+        RBRACK, LBRACE, RBRACE, NONETYPE, BITAND
     };
 
     enum class error_type {
@@ -39,7 +39,7 @@ namespace table {
     enum class pcode {
         LOAD, LOADI, STO, STORIN, ADD, POS, SUB, NEG, MULT, DIV, MOD, BR, BRF, ANDU, ORU, ANDEND, OREND,
         EQ, NEQ, GEQ, LEQ, GT, LES, AND, OR, NOT, SETD1, SETD2, J, RE, GETINT, PRINT, INB, OUTB, NEW, BOUND1,
-        BOUND2, SETD1R, SETD2R, TYPE, FRP, PARAMEND, FUNCDEF, ANDUNIT, ORUNIT, LABEL, ELEM, END
+        BOUND2, SETD1R, SETD2R, TYPE, FRP, PARAMEND, FUNCDEF, ANDUNIT, ORUNIT, LABEL, ELEM, END, BITAND
     };
 
     enum class identifier {
@@ -98,7 +98,8 @@ namespace table {
         {"]",        sym::RBRACK},
         {"{",        sym::LBRACE},
         {"}",        sym::RBRACE},
-        {"",         sym::NONETYPE}
+        {"",         sym::NONETYPE},
+        {"bitand",   sym::BITAND}
     };
 }
 
